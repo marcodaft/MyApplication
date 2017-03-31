@@ -62,10 +62,12 @@ public class MainActivity extends AppCompatActivity {
                     // looping through All Legislators
                     for (int i = 0; i < legislators.length(); i++) {
                         JSONObject l = legislators.getJSONObject(i);
-                        String cid = l.getString(["@attributes"]"cid");
-                        String lastname = l.getString(["@attributes"]"lastname");
-                        String firstlast = l.getString(["@attributes"]"firstlast");
-                        String gender = l.getString(["@attributes"]"gender");
+                        JSONObject a = l.getJSONObject("@attributes");
+                        String cid = a.getString("cid");
+                        String lastname = a.getString("lastname");
+//                        Log.d("lastname = ", lastname);  // uncomment this line to print to logcat
+                        String firstlast = a.getString("firstlast");
+                        String gender = a.getString("gender");
 
                         // Phone node is JSON Object
 //                        JSONObject phone = c.getJSONObject("phone");
@@ -81,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
                         legislator.put("lastname", lastname);
                         legislator.put("firstlast", firstlast);
                         legislator.put("gender", gender);
-
-
 
                         // adding legislator to legislator list
                         legislatorList.add(legislator);
@@ -119,8 +119,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, legislatorList,
-                    R.layout.list_item, new String[]{ "email","mobile"},
-                    new int[]{R.id.email, R.id.mobile});
+//                    R.layout.list_item, new String[]{ "email","mobile"},
+//                    new int[]{R.id.email, R.id.mobile});
+                    R.layout.list_item, new String[]{ "lastname","gender"},
+                    new int[]{R.id.lastname, R.id.gender});
             lv.setAdapter(adapter);
         }
     }
