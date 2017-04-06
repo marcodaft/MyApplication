@@ -2,12 +2,19 @@ package edu.arizona.si.marcogarcia.myapplication;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +23,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private String TAG = MainActivity.class.getSimpleName();
     private ListView lv;
@@ -26,12 +34,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.print_list);
 
         legislatorList = new ArrayList<>();
         lv = (ListView) findViewById(R.id.list);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         new GetLegislators().execute();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     private class GetLegislators extends AsyncTask<Void, Void, Void> {
@@ -65,9 +85,11 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject a = l.getJSONObject("@attributes");
                         String cid = a.getString("cid");
                         String lastname = a.getString("lastname");
-//                        Log.d("lastname = ", lastname);  // uncomment this line to print to logcat
+                        String party = a.getString("party");
                         String firstlast = a.getString("firstlast");
-                        String gender = a.getString("gender");
+                        Log.d("lastname = ", lastname);  // uncomment this line to print to logcat
+                        Log.d("party = ", party);
+
 
                         // Phone node is JSON Object
 //                        JSONObject phone = c.getJSONObject("phone");
@@ -82,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         legislator.put("cid", cid);
                         legislator.put("lastname", lastname);
                         legislator.put("firstlast", firstlast);
-                        legislator.put("gender", gender);
+                        legislator.put("party", party);
 
                         // adding legislator to legislator list
                         legislatorList.add(legislator);
@@ -121,9 +143,34 @@ public class MainActivity extends AppCompatActivity {
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, legislatorList,
 //                    R.layout.list_item, new String[]{ "email","mobile"},
 //                    new int[]{R.id.email, R.id.mobile});
-                    R.layout.list_item, new String[]{ "lastname","gender"},
-                    new int[]{R.id.lastname, R.id.gender});
+                    R.layout.list_item, new String[]{ "lastname","party"},
+                    new int[]{R.id.lastname, R.id.party});
             lv.setAdapter(adapter);
         }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
